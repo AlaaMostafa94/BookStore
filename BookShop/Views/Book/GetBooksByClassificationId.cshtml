@@ -1,0 +1,32 @@
+﻿@model List<BookShop.Models.Book>
+@{
+    ViewBag.Title = ViewBag.ClassificationName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="card">
+                <div class="card-img">
+                    <img src="~/Uploads/BooksCovers/@item.CoverPicture" alt="cover" style="width: 100%; height: 100px;" />
+
+                </div>
+                <div class="card-footer">
+                    <a href="/book/getOne/@item.ID">@item.Title</a>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+@*<ul>
+
+@foreach (var item in Model)
+{
+    <li>@item.Title</li>
+}
+    </ul>*@
+
+

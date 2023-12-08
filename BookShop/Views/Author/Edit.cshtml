@@ -1,0 +1,49 @@
+﻿@model BookShop.Models.Author
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+
+<h2>Edit Author</h2>
+<br />
+<br />
+<div>
+    <form method="post" action="/author/edit/@Model.ID" onsubmit="return isValid()" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+
+
+            @Html.LabelFor(model => model.Name)
+            <div>
+                <input type="text" name="name" id="authorName" class="form-control w-50" maxlength="30" value="@Model.Name" />
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", id = "nameErrorMsg" })
+            </div><br>
+            @Html.LabelFor(model => model.About)
+            <div>
+                <input type="text" name="about" id="AboutAuthor" class="form-control w-50" maxlength="500" value="@Model.About" />
+                @Html.ValidationMessageFor(model => model.About, "", new { @class = "text-danger", id = "aboutErrorMsg" })
+            </div><br>
+            <label>Image</label>
+            <div>
+                <input type="file" name="file" id="AuthImage"  />
+                @Html.ValidationMessageFor(model => model.ImagePath, "", new { @class = "text-danger", id = "imgErrorMsg" })
+            </div><br>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<hr>
+<div>
+
+    <button onclick="window.history.back()" class="btn btn-info" title="Back"><i class="fa fa-arrow-left"></i></button>
+</div>

@@ -1,0 +1,126 @@
+﻿@model BookShop.Models.Book
+@{
+    ViewBag.Title = "AddNew";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+
+<br>
+<br>
+
+<h2 class="text-info">Add Book</h2>
+<hr>
+<div>
+    <form action="/Book/addnew" method="post"  enctype="multipart/form-data" onsubmit="return isValid()">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label>Title :</label>
+                <div>
+                    <input type="text" name="title" id="bookTitle" class="form-control " maxlength="40" />
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger", id = "titleErrorMsg" })
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label>Author :</label>
+                <div>
+                    <select name="authorid" id="bookAuthor" class="form-control ">
+                        @foreach (var item in ViewBag.authors)
+                        {
+                            <option value="@item.ID">@item.Name</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger", id = "authorErrorMsg" })
+                </div>
+            </div>
+        </div>
+       <br>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label>Classification :</label>
+                <div>
+                    <select name="classificationid" id="bookClassification" class="form-control ">
+                        @foreach (var item in ViewBag.classifications)
+                        {
+                            <option value="@item.ID">@item.Name</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger", id = "authorErrorMsg" })
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label>Description :</label>
+                <div>
+                    <input type="text" name="description" id="bookDescription" class="form-control" maxlength="300" />
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger", id = "descriptionErrorMsg" })
+                </div>
+            </div>
+        </div>
+<br>
+
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <label>Cover :</label>
+        <div>
+            <input type="file" name="BookCover" id="BookCover" />
+            @Html.ValidationMessageFor(model => model.CoverPicture, "", new { @class = "text-danger", id = "coverErrorMsg" })
+
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <label>Content :</label>
+        <div>
+            <input type="file" name="BookContent" id="BookContent" />
+            @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger", id = "contentErrorMsg" })
+
+        </div>
+    </div>
+</div>
+<br>
+
+
+        <input type="submit" value="Save" class="btn btn-info" />
+
+    </form>
+</div>
+<hr />
+<div>
+
+    <button onclick="window.history.back()" class="btn btn-info" title="Back"><i class="fa fa-arrow-left"></i></button>
+</div>
+<script>
+    function isValid() {
+        var bTitle = document.getElementById("bookTitle").value;
+        var bDescription = document.getElementById("bookDescription").value;
+        var titleValid = false;
+        var DescriptionValid = false;
+        if (bTitle.trim() == "") {
+            document.getElementById("titleErrorMsg").innerHTML = "Book title can not be empty .";
+            titleValid = false;
+        }
+        else if (bTitle.trim().length < 3) {
+            document.getElementById("titleErrorMsg").innerHTML = "Book Title must be at least 3 characters .";
+            titleValid = false;
+        }
+        else {
+            document.getElementById("titleErrorMsg").innerHTML = "";
+            titleValid = true;
+        }
+
+        if (bDescription.trim() == "") {
+            document.getElementById("descriptionErrorMsg").innerHTML = "Book Description can not be empty .";
+            DescriptionValid = false;
+        }
+        else if (bDescription.trim().length < 30) {
+            document.getElementById("descriptionErrorMsg").innerHTML = "Book Description must be at least 30 characters .";
+            DescriptionValid = false;
+        }
+        else {
+            document.getElementById("descriptionErrorMsg").innerHTML = "";
+            DescriptionValid = true;
+        }
+
+
+        return titleValid && DescriptionValid;
+    }
+</script>
