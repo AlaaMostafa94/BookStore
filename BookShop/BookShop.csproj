@@ -196,15 +196,31 @@
     <Compile Include="Migrations\202312041350323_createDatabase.designer.cs">
       <DependentUpon>202312041350323_createDatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202312121123079_uniqueConstraint.cs" />
+    <Compile Include="Migrations\202312121123079_uniqueConstraint.designer.cs">
+      <DependentUpon>202312121123079_uniqueConstraint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202312170949036_uniqueAuthorName.cs" />
+    <Compile Include="Migrations\202312170949036_uniqueAuthorName.designer.cs">
+      <DependentUpon>202312170949036_uniqueAuthorName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202312171209556_changeColumnName.cs" />
+    <Compile Include="Migrations\202312171209556_changeColumnName.designer.cs">
+      <DependentUpon>202312171209556_changeColumnName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Author.cs" />
-    <Compile Include="Models\Book.cs" />
-    <Compile Include="Models\Classification.cs" />
-    <Compile Include="Models\Comment.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="DAL\Author.cs" />
+    <Compile Include="DAL\Book.cs" />
+    <Compile Include="DAL\Classification.cs" />
+    <Compile Include="DAL\Comment.cs" />
+    <Compile Include="DAL\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\AuthorRepository.cs" />
+    <Compile Include="Repository\ClassificationRepository.cs" />
+    <Compile Include="Repository\IAuthorRepository.cs" />
+    <Compile Include="Repository\IClassificationRepository.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1409,6 +1425,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202312041350323_createDatabase.resx">
       <DependentUpon>202312041350323_createDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202312121123079_uniqueConstraint.resx">
+      <DependentUpon>202312121123079_uniqueConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202312170949036_uniqueAuthorName.resx">
+      <DependentUpon>202312170949036_uniqueAuthorName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202312171209556_changeColumnName.resx">
+      <DependentUpon>202312171209556_changeColumnName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

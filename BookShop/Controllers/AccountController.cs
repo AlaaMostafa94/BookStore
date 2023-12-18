@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BookShop.Models;
+using BookShop.DAL;
 
 namespace BookShop.Controllers
 {

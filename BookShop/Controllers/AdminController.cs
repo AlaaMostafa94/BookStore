@@ -1,5 +1,4 @@
-﻿using BookShop.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,13 +7,35 @@ using PagedList;
 using PagedList.Mvc;
 using System.IO;
 using BookShop.CustomAttributes;
+using BookShop.DAL;
+using BookShop.Repository;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Ajax.Utilities;
 
 namespace BookShop.Controllers
 {
+
+
     [CustomAuthorize(Roles ="Admin",LoginPage ="/Account/AdminLogin")]
     public class AdminController : Controller
     {
+
         ApplicationDbContext context = new ApplicationDbContext();
+        private IClassificationRepository _classificationRepository;
+        private IAuthorRepository _authorRepository;
+
+
+        public AdminController()
+        {
+            _classificationRepository = new ClassificationRepository(new ApplicationDbContext());
+            _authorRepository= new AuthorRepository(new ApplicationDbContext());
+        }
+
+        public AdminController(IClassificationRepository classificationRepository,IAuthorRepository authorRepository)
+        {
+            _classificationRepository = classificationRepository;
+            _authorRepository = authorRepository;
+        }
         // GET: Admin
         public ActionResult Index()
         {
@@ -27,14 +48,14 @@ namespace BookShop.Controllers
 
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
 
-            var list = context.Classifications.ToList().OrderBy(c => c.Name);
+            var list = _classificationRepository.GetAll();  
             IPagedList<Classification> classificationsPagedList = list.ToPagedList(pageIndex,3);
             return View(classificationsPagedList);
         }
 
         public ActionResult GetClassificationById(int id)
         {
-            var details = context.Classifications.FirstOrDefault(c => c.ID == id);
+            var details = _classificationRepository.GetById(id);  
             return View(details);
         }
 
@@ -46,82 +67,73 @@ namespace BookShop.Controllers
         [HttpPost]
         public ActionResult AddNewClassification(Classification classification)
         {
-            var classificationNames = context.Classifications.Select(c => c.Name).ToList();
+            Classification searchClassificationName = _classificationRepository.GetByName(classification.Name);
             if (ModelState.IsValid)
             {
-                if (!classificationNames.Contains(classification.Name))
+                if (searchClassificationName == null)
                 {
-                    context.Classifications.Add(classification);
-                    context.SaveChanges();
+                    _classificationRepository.Insert(classification);
+                    _classificationRepository.Save();
                     return RedirectToAction("GetAllClassifications");
                 }
                 else
                 {
-                    ModelState.AddModelError("Name", "This classification is already exists .");
+                    ModelState.AddModelError("Name", "This Name is already exists");
                     return View(classification);
                 }
-            }
-            return View(classification);
 
+            }
+            else
+            {
+                return View(classification);
+            }
 
         }
 
         public ActionResult EditClassification(int id)
         {
-            var objClass = context.Classifications.FirstOrDefault(c => c.ID == id);
+            var objClass = _classificationRepository.GetById(id); //context.Classifications.FirstOrDefault(c => c.ID == id);
             return View(objClass);
         }
    
         [HttpPost]
-        public ActionResult EditClassification(int id, Classification newClassification)
+        public ActionResult EditClassification(Classification classification)
         {
-            var allClassifications = context.Classifications.ToList();
-            bool isExist = false;
-            var obj = context.Classifications.FirstOrDefault(c => c.ID == id);
             if (ModelState.IsValid)
             {
-                obj.Name = newClassification.Name;
-
-                foreach (var item in allClassifications)
-                {
-                    if (obj.Name == item.Name && obj.ID != item.ID)
-                    {
-                        isExist = true;
-                    }
-                }
-                if (isExist == false)
-                {
-                    context.SaveChanges();
+                    _classificationRepository.Update(classification);
+                    _classificationRepository.Save();
                     return RedirectToAction("GetAllClassifications");
-                }
-                else
-                {
-                    ModelState.AddModelError("Name", "This classification is already exists .");
-                    return View(obj);
-                }
+
+
             }
-            return View(newClassification);
+            else
+            {
+                return View(classification);
+            }
 
 
         }
 
         public ActionResult DeleteClassification(int id)
         {
-            var obj = context.Classifications.FirstOrDefault(c => c.ID == id);
+            var obj = _classificationRepository.GetById(id); 
             var books = context.Books.Where(x => x.ClassificationID == id).ToList();
             foreach(var item in books)
             {
                 context.Books.Remove(item);
                 context.SaveChanges();
             }
-            context.Classifications.Remove(obj);
-            context.SaveChanges();
+            _classificationRepository.Delete(id);
+            _classificationRepository.Save();
             return Json(new { status = "Success" });
         }
 
         public ActionResult GetAllAuthors(int? page)
+        
+        
         {
-            List<Author> AuthorsList = context.Authors.ToList();
+            IEnumerable<Author> AuthorsList = _authorRepository.GetAll();
             int pageIndex = 1;
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             IPagedList<Author> pagedAuthors = AuthorsList.ToPagedList(pageIndex, 3);
@@ -130,7 +142,7 @@ namespace BookShop.Controllers
 
         public ActionResult GetAuthorById(int id)
         {
-            Author author = context.Authors.FirstOrDefault(a => a.ID == id);
+            Author author = _authorRepository.GetById(id);
             return View(author);
         }
 
@@ -138,41 +150,36 @@ namespace BookShop.Controllers
         {
             return View();
         }
+
+
         [HttpPost]
         public ActionResult AddNewAuthor(Author author,HttpPostedFileBase file)
         {
             if (file == null)
             {
-                author.ImagePath = "images.png";
+                author.Image = "images.png";
             }
             else if (file.ContentLength > 0)
             {
-                var fileName = Path.GetFileName(file.FileName);
-                var guid = Guid.NewGuid().ToString();
-                var path = Path.Combine(Server.MapPath("~/Uploads/AuthorsPhotos"), guid + fileName);
-
-                file.SaveAs(path);
-                string fl = path.Substring(path.LastIndexOf("\\"));
-                string[] split = fl.Split('\\');
-                string newpath = split[1];
-                //string imagepath = newpath; 
-                author.ImagePath = newpath;
+                string filePath = UploadFile(file);
+                string fileName = GetFileName(filePath);
+                author.Image = fileName;
 
             }
-            var AuthorsNames = context.Authors.Select(c => c.Name).ToList();
+            var searchAuthor = _authorRepository.GetByName(author.Name);
 
             if (ModelState.IsValid)
             {
-                if (!AuthorsNames.Contains(author.Name))
+                if (searchAuthor == null)
                 {
-                    context.Authors.Add(author);
-                    context.SaveChanges();
+                    _authorRepository.Insert(author); 
+                    _authorRepository.Save(); 
                     return RedirectToAction("GetAllAuthors");
 
                 }
                 else
                 {
-                    ModelState.AddModelError("", "This author is already exists");
+                    ModelState.AddModelError("Name", "This author is already exists");
                     return View(author);
                 }
             }
@@ -182,76 +189,72 @@ namespace BookShop.Controllers
 
         public ActionResult EditAuthor(int id)
         {
-            Author author = context.Authors.FirstOrDefault(a => a.ID == id);
+            Author author = _authorRepository.GetById(id); //context.Authors.FirstOrDefault(a => a.ID == id);
             return View(author);
         }
 
-        [HttpPost]
-        public ActionResult EditAuthor(int id,Author newAuthor,HttpPostedFileBase file)
+
+        public string UploadFile(HttpPostedFileBase file)
         {
-            var allAuthors = context.Authors.ToList();
-            bool isExist = false;
-            var auth = context.Authors.FirstOrDefault(a => a.ID == id);
+            string fileName = Path.GetFileName(file.FileName);
+            string guid = Guid.NewGuid().ToString();
+            string path = Path.Combine(Server.MapPath("~/Uploads/AuthorsPhotos"), guid + fileName);
+            file.SaveAs(path);
+            return path;
+        }
+        public string GetFileName(string filePath)
+        {
+
+            string fl = filePath.Substring(filePath.LastIndexOf("\\"));
+            string[] split = fl.Split('\\');
+            string fileName = split[1];
+            return fileName;
+
+
+        }
+        [HttpPost]
+        public ActionResult EditAuthor(int id,Author author,HttpPostedFileBase file)
+        {
+
             if (ModelState.IsValid)
             {
                 if (file == null)
                 {
-                    auth.ImagePath = context.Authors.FirstOrDefault(a => a.ID == id).ImagePath;//auth.ImagePath;
+                    author.Image = _authorRepository.GetById(id).Image; //context.Authors.FirstOrDefault(a => a.ID == id).ImagePath;//auth.ImagePath;
                 }
                 else if (file.ContentLength > 0)
                 {
-                    var fileName = Path.GetFileName(file.FileName);
-                    var guid = Guid.NewGuid().ToString();
-                    var path = Path.Combine(Server.MapPath("~/Uploads/AuthorsPhotos"), guid + fileName);
-
-                    file.SaveAs(path);
-                    string fl = path.Substring(path.LastIndexOf("\\"));
-                    string[] split = fl.Split('\\');
-                    string newpath = split[1];
-                    //string imagepath = newpath;
-                    auth.ImagePath = newpath;
-                }
+                    string filePath = UploadFile(file);
+                    string fileName = GetFileName(filePath);
+                    author.Image = fileName;
 
 
-                auth.About = newAuthor.About;
-                //    //auth.ImagePath = newAuthor.ImagePath;
-                auth.Name = newAuthor.Name;
-                foreach (var item in allAuthors)
-                {
-                    if (auth.Name == item.Name && auth.ID != item.ID)
-                    {
-                        isExist = true;
-                    }
                 }
+                _authorRepository.Update(author);
+                _authorRepository.Save();
+                return RedirectToAction("GetAllAuthors");
 
-                if (isExist == false)
-                {
-                    context.SaveChanges();
-                    return RedirectToAction("GetAllAuthors");
-                }
-                else
-                {
-                    ModelState.AddModelError("Name", "This author is already exists .");
-                    return View(auth);
-                }
 
             }
-            return View(newAuthor);
+            return View(author);
         }
 
 
         public JsonResult DeleteAuthor(int id)
         {
-            var auth = context.Authors.FirstOrDefault(a => a.ID == id);
+
             List<Book> authorBooks = context.Books.Where(b => b.AuthorID == id).ToList();
             foreach (var item in authorBooks)
             {
                 context.Books.Remove(item);
                 context.SaveChanges();
             }
-            context.Authors.Remove(auth);
-            context.SaveChanges();
+            _authorRepository.Delete(id);
+            _authorRepository.Save();
             return Json(new { status = "Success" });
+
+
+
         }
 
         public ActionResult GetAllBooks(int? page)
@@ -440,5 +443,8 @@ namespace BookShop.Controllers
             return Json(new { status = "Success" });
 
         }
+
+
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using BookShop.Models;
+﻿using BookShop.DAL;
 using PagedList;
 using System;
 using System.Collections.Generic;

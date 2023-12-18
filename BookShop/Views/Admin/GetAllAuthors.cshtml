@@ -1,4 +1,4 @@
-﻿@model IPagedList<BookShop.Models.Author>
+﻿@model IPagedList<BookShop.DAL.Author>
 @using PagedList;
 @using PagedList.Mvc;
 @{
@@ -58,7 +58,7 @@
                                 </td>
                                                         
                                 <td>
-                            <img src="~/Uploads/AuthorsPhotos/@item.ImagePath" alt="@item.Name" style="width: 100px; height: 100px;" class="img-thumbnail" />
+                            <img src="~/Uploads/AuthorsPhotos/@item.Image" alt="@item.Name" style="width: 100px; height: 100px;" class="img-thumbnail" />
                         </td>
 
                                 <td><a href="/Admin/EditAuthor/@item.ID" title="Edit" class="btn btn-flat flat-primary txt-primary waves-effect waves-light"><i class="fa fa-edit"></i></a></td>

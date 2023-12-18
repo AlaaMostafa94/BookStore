@@ -1,4 +1,4 @@
-﻿using BookShop.Models;
+﻿using BookShop.DAL;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;

@@ -1,4 +1,4 @@
-﻿using BookShop.Models;
+﻿using BookShop.DAL;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,7 @@ namespace BookShop.Controllers
 
             if (file == null)
             {
-                author.ImagePath = "images.png";
+               // author.ImagePath = "images.png";
             }
             else if (file.ContentLength > 0)
             {
@@ -47,7 +47,7 @@ namespace BookShop.Controllers
                 string[] split = fl.Split('\\');
                 string newpath = split[1];
                 //string imagepath = newpath; 
-                author.ImagePath = newpath;
+                //author.ImagePath = newpath;
 
 
 
@@ -83,7 +83,7 @@ namespace BookShop.Controllers
             var auth = context.Authors.FirstOrDefault(a => a.ID == id);
             if (file == null)
             {
-                auth.ImagePath = context.Authors.FirstOrDefault(a => a.ID == id).ImagePath;//auth.ImagePath;
+                //auth.ImagePath = context.Authors.FirstOrDefault(a => a.ID == id).ImagePath;//auth.ImagePath;
             }
             else if (file.ContentLength > 0)
             {
@@ -96,7 +96,7 @@ namespace BookShop.Controllers
                 string[] split = fl.Split('\\');
                 string newpath = split[1];
                 //string imagepath = newpath;
-                auth.ImagePath = newpath;
+                //auth.ImagePath = newpath;
             }
                 auth.About = newAuthor.About;
             //    //auth.ImagePath = newAuthor.ImagePath;
