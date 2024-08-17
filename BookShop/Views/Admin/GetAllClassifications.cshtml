@@ -1,0 +1,131 @@
+﻿@model IPagedList<BookShop.DAL.Classification>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Classifications";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Classifications</li>
+    </ol>
+</nav>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <a href="/Admin/AddNewClassification" title="Add new Classification" class="btn btn-flat flat-primary txt-primary waves-effect waves-light">Add <i class="fa fa-plus"></i></a>
+
+        </div>
+        <div class="card-body container">
+            @if (Model.Count() == 0)
+            {
+                <div class="bg-gray d-flex justify-content-center empty-content ">No Classifications Found .</div><br />
+
+            }
+            else
+            {
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row_@item.ID">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                    (
+                                    @if (item.Books.Count != 0)
+                                    {
+                                        <span class="text-primary">@item.Books.Count</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span>@item.Books.Count</span>
+
+                                    }
+                                    )
+                                </td>
+
+                                <td><a href="/Admin/EditClassification/@item.ID" title="Edit" class="btn btn-flat flat-primary txt-primary waves-effect waves-light"><i class="fa fa-edit"></i></a></td>
+                                <td><a href="/Admin/GetClassificationById/@item.ID" class="btn btn-flat flat-info txt-info waves-effect waves-light" title="Details"><i class="fa fa-info"></i></a></td>
+                                <td><a href="#" class="btn btn-flat flat-danger txt-danger waves-effect waves-light" onclick="confirmDelete(@item.ID)" title="Delete"><i class="fa fa-trash"></i></a></td>
+
+                            </tr>
+
+
+                        }
+                    </tbody>
+
+                </table>
+                <p>
+                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+                    of @Model.PageCount
+                </p>
+                <div>
+                    @Html.PagedListPager(Model, page => Url.Action("GetAllClassifications", new { page }))
+
+                </div>
+        <button onclick="window.history.back()" class="btn btn-info" title="Back"><i class="fa fa-arrow-left"></i></button>
+        <br /><br />
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirm delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this classification ?
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-info" data-dismiss="modal">Close</a>
+                        <a href="#" class="btn btn-danger" onclick="deleteClassification()">Confirm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+
+        </div>
+
+    </div>
+</div>
+<input type="hidden" id="hiddenClassificationId" />
+<script>
+    confirmDelete = function (classificationId) {
+        $("#hiddenClassificationId").val(classificationId);
+        $("#myModal").modal("show");
+    }
+
+    var deleteClassification = function () {
+        var classId = $("#hiddenClassificationId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/DeleteClassification",
+            data: { id: classId },
+            success: function (result) {
+                $("#myModal").modal('hide');
+                $("#row_" + classId).remove();
+            }
+        })
+    }
+</script>
+
+

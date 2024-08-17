@@ -1,0 +1,43 @@
+﻿@model BookShop.DAL.Book
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin/GetAllBooks">Books</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+    </ol>
+</nav>
+<div class="container card">
+    <div class="row">
+        <br /><br />
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+            <h4>@Model.Title</h4>
+
+            <img src="~/Uploads/BooksCovers/@Model.CoverPicture" class="img-thumbnail" style="border-radius:50%; width:40%" />
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <h6>Book Details : </h6><br>
+            <p><b>Title : </b>@Model.Title</p>
+            <p><b>Classification : </b>@Model.Classification.Name</p>
+            <p><b>Author : </b>@Model.Author.Name</p>
+            <p><b>Description : </b>@Model.Description</p>
+            <p><b>Download number : </b>@Model.DownloadNumber</p><br />
+            <p>
+                <a href="/Book/download?FileName=@Model.Content" class="btn btn-success" title="Download">Download</a>
+            </p>
+
+
+
+        </div>
+    </div>
+    <br>
+    <button onclick="window.history.back()" class="btn btn-info" title="Back"><i class="fa fa-arrow-left"></i></button>
+
+    <a href="/Admin/EditBook/@Model.ID" class="btn btn-info" title="Edit">Edit</a>
+    <br>
+    <br>
+</div>

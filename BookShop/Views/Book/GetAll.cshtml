@@ -1,0 +1,77 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<BookShop.DAL.Book>
+@{
+    //ViewBag.Title = "Books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<h2 class="text-info">Books</h2>
+<br>
+
+<div class="body-content">
+    @if (Model.Count == 0)
+    {
+        <div class="bg-gray d-flex justify-content-center empty-content">No Books Found .</div>
+
+    }
+    else
+    {
+
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                    <div class="card bg-gray" style="border-radius: 0px;">
+                        <div class="card-img">
+                            <img src="~/Uploads/BooksCovers/@item.CoverPicture" class="w-100" style="height: 150px" />
+                        </div>
+                        <div class="card-footer">
+                            @item.Title<br>
+                            <a href="/book/GetOne/@item.ID" class="btn btn-info" title="Details"><i class="fa fa-info"></i></a>
+                            <a href="/Book/Download?FileName=@item.Content" class="btn btn-success"><i class="fa fa-download" title="Download"></i></a>
+
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+        <p>
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+            of @Model.PageCount
+        </p>
+        <div>
+            @Html.PagedListPager(Model, page => Url.Action("GetAll", new { page }))
+
+        </div>
+        @*<table class="table table-hover table-bordered">
+
+                <tbody id="myTable">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.ID">
+                            <td>
+                                @item.Title
+
+                            </td>
+                            <td>
+                                @item.Author.Name
+                            </td>
+                            <td>
+                                <img src="~/Uploads/BooksCovers/@item.CoverPicture" alt="@item.Title" style="width: 100px; height: 100px;" class="img-thumbnail" />
+                            </td>
+
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>*@
+
+    }
+</div>
+

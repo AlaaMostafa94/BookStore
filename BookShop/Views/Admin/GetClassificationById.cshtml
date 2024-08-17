@@ -1,0 +1,37 @@
+﻿@model BookShop.DAL.Classification
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin/GetAllClassifications">Classifications</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="container card">
+    <br />
+    <h4>@Model.Name</h4>
+    
+    <button onclick="window.history.back()" class="btn btn-primary" title="Back"><i class="fa fa-arrow-left"></i></button>
+
+    <a href="/Admin/EditClassification/@Model.ID" class="btn btn-primary" title="Edit">Edit</a>
+    <br />
+    <br>
+    <br>
+    @if (Model.Books.Count == 0)
+    {
+        <div class="bg-gray empty-content d-flex justify-content-center">No Books in this classification .</div>
+    }
+    else
+    {
+        Html.RenderPartial("~/Views/PartialViews/BookList.cshtml", Model.Books.ToList());
+
+    }
+    <br>
+</div>
+
+
+

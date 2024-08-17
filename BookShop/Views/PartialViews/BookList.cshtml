@@ -1,0 +1,25 @@
+﻿@model List<BookShop.DAL.Book>
+
+
+
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                    <div class="card bg-gray" style="border-radius: 0px;">
+                        <div class="card-img">
+                            <img src="~/Uploads/BooksCovers/@item.CoverPicture" class="w-100" style="height: 150px" />
+                        </div>
+                        <div class="card-footer">
+                            @item.Title<br>
+                            <a href="/Admin/GetBookById/@item.ID" class="btn btn-info" title="Details"><i class="fa fa-info"></i></a>
+                            <a href="/Book/Download?FileName=@item.Content" class="btn btn-success"><i class="fa fa-download" title="Download"></i></a>
+
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+

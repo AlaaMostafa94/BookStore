@@ -1,0 +1,44 @@
+﻿@model BookShop.DAL.Author
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin/GetAllAuthors">Authors</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
+<div class="container card">
+    <div class="row">
+        <br /><br />
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+            <h4>@Model.Name</h4>
+
+            <img src="~/Uploads/AuthorsPhotos/@Model.Image" class="img-thumbnail" style="border-radius:50%; width:40%" />
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <h6>About @Model.Name :</h6><br>
+            <p>@Model.About</p>
+        </div>
+    </div>
+
+    <br>
+    <button onclick="window.history.back()" class="btn btn-info" title="Back"><i class="fa fa-arrow-left"></i></button>
+
+    <a href="/Admin/EditAuthor/@Model.ID" class="btn btn-info" title="Edit">Edit</a>
+    <br>
+    <br>
+    <br />
+    @if (Model.Books.Count == 0)
+    {
+        <div class="bg-gray empty-content d-flex justify-content-center">No Books for this author .</div>
+    }
+    else
+    {
+                Html.RenderPartial("~/Views/PartialViews/BookList.cshtml", Model.Books.ToList());
+    }
+    <br>
+</div>

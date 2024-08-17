@@ -1,0 +1,48 @@
+﻿@model BookShop.DAL.Author
+@{
+    ViewBag.Title = "Edit Author";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Admin/GetAllAuthors">Authors</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Author</li>
+    </ol>
+</nav>
+<div class="card container">
+    <br />
+    <form method="post" action="/Admin/EditAuthor/@Model.ID" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+        <div class="form-group row">
+            <label for="AuthorName" class="col-md-2 col-xs-2 col-form-label form-control-label">Name</label>
+            <div class="col-sm-10 col-md-3">
+                <input class="form-control" value="@Model.Name" type="text" maxlength="30" name="name" id="AuthorName">
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", id = "nameErrorMsg" })
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="AboutAuthor" class="col-md-2 col-xs-2 col-form-label form-control-label">About</label>
+            <div class="col-sm-10 col-md-3">
+                <input class="form-control" value="@Model.About" type="text" maxlength="500" name="about" id="AboutAuthor">
+                @Html.ValidationMessageFor(model => model.About, "", new { @class = "text-danger", id = "aboutErrorMsg" })
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="file" class="col-md-2 col-xs-2 col-form-label form-control-label">Image</label>
+            <div class="col-sm-10 col-md-3">
+                <input class="form-control"  type="file" name="file" id="file">
+                @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger", id = "imgErrorMsg" })
+
+            </div>
+        </div>
+        <button onclick="window.history.back()" class="btn btn-primary" title="Back"><i class="fa fa-arrow-left"></i></button>
+
+        <input type="submit" value="Save" class="btn btn-primary waves-effect waves-light" />
+        <br /><br />
+    </form>
+</div>

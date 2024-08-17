@@ -1,0 +1,65 @@
+﻿@model List<BookShop.DAL.Author>
+@{
+    //ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<h2 class="text-dark">Authors</h2>
+<br>
+
+<div class="body-content">
+    @if (Model.Count == 0)
+    {
+        <div class="bg-gray d-flex justify-content-center empty-content">No Authors Found .</div>
+
+    }
+    else
+    {
+<div>
+    @foreach (var item in Model)
+    {
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="card">
+            <div class="card-img">
+                <img src="~/Uploads/AuthorsPhotos/@item.Image" alt="@item.Name" style="width: 100%; height: 100px;" />
+
+            </div>
+            <div class="card-footer">
+                <a href="/author/getOne/@item.ID">@item.Name</a>
+            </div>
+        </div>
+    </div>
+
+            }
+        </div>
+        @*<table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Image</th>
+
+                    </tr>
+                </thead>
+                <tbody id="myTable">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.ID">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+
+                            </td>
+                            <td>
+                                <img src="~/Uploads/AuthorsPhotos/@item.ImagePath" alt="@item.Name" style="width: 100px; height: 100px;" class="img-thumbnail" />
+                            </td>
+
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>*@
+
+    }
+</div>

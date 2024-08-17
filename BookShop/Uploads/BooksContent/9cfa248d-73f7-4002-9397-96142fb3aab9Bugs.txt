@@ -1,0 +1,8 @@
+validate file type
+validate unique fields
+update classification
+update author
+update book
+duplication in ViewBags
+use IQuerable instead of IEnumerable
+Initiate DownloadNum and DownloadDate in Book class

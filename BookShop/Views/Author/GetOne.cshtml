@@ -1,0 +1,52 @@
+﻿@model BookShop.DAL.Author
+
+@{
+    //ViewBag.Title = "GetOne";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2 class="text-info">Details</h2>
+<hr>
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+        <h4>@Model.Name</h4>
+
+        <img src="~/Uploads/AuthorsPhotos/@Model.Image" class="img-thumbnail" style="border-radius:50%; width:40%" />
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <h6>About @Model.Name :</h6><br>
+        <p>@Model.About</p>
+    </div>
+</div>
+
+<br>
+
+@if (Model.Books.Count == 0)
+{
+    <div class="bg-gray empty-content d-flex justify-content-center">No Books found for this author .</div>
+}
+else
+{
+<div class="row">
+    @foreach (var item in Model.Books)
+    {
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="card" style="border-radius: 0px;">
+                <div class="card-body">
+                    <img src="~/Uploads/BooksCovers/@item.CoverPicture" class="w-100" style="height: 150px" />
+                </div>
+                <div class="card-footer">
+                    @item.Title<br>
+                    <a href="/book/getone/@item.ID" class="btn btn-info" title="Details"><i class="fa fa-info"></i></a>
+                    <a href="/book/Download?FileName=@item.Content" class="btn btn-success"><i class="fa fa-download" title="Download"></i></a>
+
+                </div>
+
+            </div>
+        </div>
+    }
+
+</div>
+}

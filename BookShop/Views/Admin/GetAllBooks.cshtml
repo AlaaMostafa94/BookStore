@@ -1,0 +1,110 @@
+﻿@model IPagedList<BookShop.DAL.Book>
+@using PagedList;
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Books";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Books</li>
+    </ol>
+</nav>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <a href="/Admin/AddNewBook" title="Add new Book" class="btn btn-flat flat-primary txt-primary waves-effect waves-light">Add <i class="fa fa-plus"></i></a>
+
+        </div>
+        <div class="card-body container">
+            @if (Model.Count() == 0)
+            {
+                <div class="bg-gray d-flex justify-content-center empty-content ">No Books Found .</div><br />
+
+            }
+            else
+            {
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Cover Photo</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr id="row_@item.ID">
+                            <td>@item.Title</td>
+                            <td>
+                                <img src="~/Uploads/BooksCovers/@item.CoverPicture" alt="@item.Title" style="width: 100px; height: 100px;" class="img-thumbnail" />
+                            </td>
+                            <td><a href="/Admin/EditBook/@item.ID" title="Edit" class="btn btn-flat flat-primary txt-primary waves-effect waves-light"><i class="fa fa-edit"></i></a></td>
+                            <td><a href="/Admin/GetBookById/@item.ID" class="btn btn-flat flat-info txt-info waves-effect waves-light" title="Details"><i class="fa fa-info"></i></a></td>
+                            <td><a href="#" class="btn btn-flat flat-danger txt-danger waves-effect waves-light" onclick="confirmDelete(@item.ID)" title="Delete"><i class="fa fa-trash"></i></a></td>
+                            <td><a href="/Book/Download?FileName=@item.Content" class="btn btn-flat flat-success txt-success waves-effect waves-light" title="Download"><i class="fa fa-download"></i></a></td>
+
+
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <p>
+                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+                    of @Model.PageCount
+                </p>
+                <div>
+                    @Html.PagedListPager(Model, page => Url.Action("GetAllBooks", new { page }))
+
+                </div>
+                <button onclick="window.history.back()" class="btn btn-info" title="Back"><i class="fa fa-arrow-left"></i></button>
+                <br /><br />
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirm delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete this Book ?
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-info" data-dismiss="modal">Close</a>
+                                <a href="#" class="btn btn-danger" onclick="deleteBook()">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hiddenBookId" />
+<script>
+    confirmDelete = function (bookId) {
+        $("#hiddenBookId").val(bookId);
+        $("#myModal").modal("show");
+    }
+
+    deleteBook = function () {
+        var bId = $("#hiddenBookId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/DeleteBook",
+            data: { id: bId },
+            success: function (result) {
+                $("#myModal").modal('hide');
+                $("#row_" + bId).remove();
+            }
+        })
+    }
+</script>

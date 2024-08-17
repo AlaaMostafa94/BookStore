@@ -1,0 +1,57 @@
+﻿@model BookShop.DAL.Book
+@{
+    //ViewBag.Title = "GetOne";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<h2 class="text-info">Details</h2>
+<hr>
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+        <h4>@Model.Title</h4>
+
+        <img src="~/Uploads/BooksCovers/@Model.CoverPicture" class="img-thumbnail" style="width:40%" />
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <h6>Details :</h6><br>
+        <b>Title :</b>@Model.Title<br />
+        <b>Author :</b>@Model.Author.Name<br />
+        <b>Classification :</b>@Model.Classification.Name<br />
+        <b>Description :</b>@Model.Description<br />
+        @*<b>Download Number :</b>@Model.DownloadNumber<br />*@
+
+    </div>
+</div>
+<br>
+
+<a href="/Book/download?FileName=@Model.Content" class="btn btn-success" title="Edit">Download</a>
+<br>
+<br>
+@if (Model.Comments.Count == 0)
+    {
+        <div class="bg-gray empty-content d-flex justify-content-center">No Comments found for this Book .</div>
+    }
+    else
+    {
+        foreach(var item in Model.Comments)
+        {
+            <div>
+                <b class="txt-primary">@item.ApplicationUser.UserName</b> : @item.Text
+            </div>
+        }
+    }
+
+@if (User.Identity.IsAuthenticated)
+{
+    <br />
+    <br />
+    <form method="post" action="/comment/AddComment?bookid=@Model.ID">
+        <input type="text" class="form-control" placeholder="Add Comment" name="commentText" /><br />
+        <input type="submit" value="Add Comment" class="btn btn-primary" />
+    </form>
+
+}
+
