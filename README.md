@@ -1,3 +1,2 @@
 # BookStore
 
-### Notes
